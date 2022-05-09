@@ -20,15 +20,16 @@ function makePictureCards(items) {
 }
 
 function onMiniImgClick(e) {
-    let largeImageUrl;
-    if (e.target.parentNode.nodeName === 'A') {
-        e.preventDefault();
-        largeImageUrl = e.target.parentNode.href;
+    if (e.target.nodeName !== "IMG") {
+        return false;
     }
+    e.preventDefault();
+    let largeImageUrl = e.target.parentNode.href;
     createModal(largeImageUrl).show();
 }
 
-function createModal(largeImageUrl) {
+
+function createModal(largeImageUrl){
     instance = basicLightbox.create(`
     <div class="modal">
         <img
@@ -39,20 +40,16 @@ function createModal(largeImageUrl) {
     </div>
 `, {
         onShow: (instance) => {
-            instance.element().addEventListener('click', onModalMouseClick);
+            instance.element().addEventListener('click', instance.close);
             window.addEventListener('keydown', onModalEscPress);
         },
         onClose: (instance) => {
-            instance.element().removeEventListener('click', onModalMouseClick);
             window.removeEventListener('keydown', onModalEscPress);
         }
     });
     return instance;
 }
 
-const onModalMouseClick = (e) => {
-    instance.close();
-};
 const onModalEscPress = (e) => {
     if (e.key === 'Escape') {
         instance.close();
